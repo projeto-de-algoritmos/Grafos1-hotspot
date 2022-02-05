@@ -39,6 +39,14 @@ function App() {
         p5.rect(x, y, cellWidth, cellWidth);
       }
     }
+
+    this.highlight = function() {
+      let x = this.column * cellWidth;
+      let y = this.line * cellWidth;
+      p5.noStroke();
+      p5.fill(0, 0, 255, 100);
+      p5.rect(x, y, cellWidth, cellWidth);
+    };
     
   }
 
@@ -65,6 +73,9 @@ function App() {
     for (let i = 0; i < arrayOfCells.length; i++) {
       arrayOfCells[i].showCell();
     }
+
+    current.visited = true;
+    current.highlight();
   }
 
   return (
