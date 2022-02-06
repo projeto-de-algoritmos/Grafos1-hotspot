@@ -1,22 +1,35 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
+import Labyrinth from './labirinto'
 import Sketch from 'react-p5'
 import './App.css'
 
 function App() {
 
-  let totalColumns, totalRows
+  const totalColumns = 20;
+  const totalRows = 20;
   let cellWidth = 20
   let arrayOfCells = []
+  const [isCreated, setIsCreated] = useState(false);
+  const [arrayDFS, setArrayDFS] = useState([]);
+  const [arrayBFS, setArrayBFS] = useState([]);
+  const [arrayHotspot, setArrayHotspot] = useState([]);
+
+
+  
+  const [_array, setArray] = useState([])
+
   let current
   let stack = []
+  let endpoint = { endline: 19, endcolumn: 19 }
 
-  function Cell(column, line, p5) {
+  function Cell(column, line, walls, isEnd) {
     this.column = column
     this.line = line
-    this.walls = [true, true, true, true] // CIMA, DIREITA, BAIXO, ESQUERDA
+    this.walls = walls || [true, true, true, true] // CIMA, DIREITA, BAIXO, ESQUERDA
     this.visited = false
+    this.isEnd = isEnd || (line === endpoint.endline && column === endpoint.endcolumn)
 
-    this.showCell = function() {
+    this.showCell = function(p5) {
       let x = this.column * cellWidth
       let y = this.line * cellWidth
       p5.stroke(212, 241, 244)
@@ -35,12 +48,18 @@ function App() {
   
       if (this.visited) {
         p5.noStroke()
-        p5.fill(24, 154, 180, 100)
+        isCreated ? p5.fill('green') : p5.fill(24, 154, 180, 100)
+        p5.rect(x, y, cellWidth, cellWidth)
+      }
+
+      if (this.isEnd && isCreated) {
+        p5.noStroke()
+        p5.fill('red')
         p5.rect(x, y, cellWidth, cellWidth)
       }
     }
 
-    this.highlight = function() {
+    this.highlight = function(p5) {
       let x = this.column * cellWidth
       let y = this.line * cellWidth
       p5.noStroke()
@@ -48,7 +67,7 @@ function App() {
       p5.rect(x, y, cellWidth, cellWidth)
     }
 
-    this.checkNeighbors = function() {
+    this.checkNeighbors = function(p5) {
       let neighbors = []
   
       let top = arrayOfCells[getArrayPosition(column, line - 1)]
@@ -72,6 +91,32 @@ function App() {
       if (neighbors.length > 0) {
         let randomPosition = p5.floor(p5.random(0, neighbors.length))
         return neighbors[randomPosition]
+      } else {
+        return undefined
+      }
+    }
+
+    this.checkNeighborsAll = function(arrayToFind) {
+      let neighbors = []
+      let top = arrayToFind[getArrayPosition(column, line - 1)]
+      let right = arrayToFind[getArrayPosition(column + 1, line)]
+      let bottom = arrayToFind[getArrayPosition(column, line + 1)]
+      let left = arrayToFind[getArrayPosition(column - 1, line)]
+      if (top && !top.visited && !this.walls[0]) {
+        neighbors.push(top)
+      }
+      if (right && !right.visited && !this.walls[1]) {
+        neighbors.push(right)
+      }
+      if (bottom && !bottom.visited && !this.walls[2]) {
+        neighbors.push(bottom)
+      }
+      if (left && !left.visited && !this.walls[3]) {
+        neighbors.push(left)
+      }
+  
+      if (neighbors.length > 0) {
+        return neighbors
       } else {
         return undefined
       }
@@ -104,53 +149,81 @@ function App() {
     }
   }
 
-  const setup = (p5, parentRef) =>{
+  const setup = (p5, parentRef) => {
     p5.createCanvas(400,400).parent(parentRef)
-    p5.frameRate(20)
-
-    totalColumns = p5.floor(p5.width / cellWidth)
-    totalRows = p5.floor(p5.height / cellWidth)
+    p5.frameRate(2000)
 
     for (let j = 0; j < totalRows; j++) {
       for (let i = 0; i < totalColumns; i++) {
-        var cell = new Cell(i, j, p5)
+        var cell = new Cell(i, j)
         arrayOfCells.push(cell)
       }
     }
 
-    console.log(arrayOfCells)
     current = arrayOfCells[0]
   }
 
   const draw = (p5) => {
     p5.background(5, 68, 94)
-
-    for (let i = 0; i < arrayOfCells.length; i++) {
-      arrayOfCells[i].showCell()
-    }
-
-    current.visited = true
-    current.highlight()
-
-    let next = current.checkNeighbors()
-    if (next) {
-      next.visited = true
-
-      stack.push(current)
-
-      removeWalls(current, next)
-
-      current = next
-
-    } else if (stack.length > 0) {
-      current = stack.pop()
-    }
-    
+  
+      for (let i = 0; i < arrayOfCells.length; i++) {
+        arrayOfCells[i].showCell(p5)
+      }
+      
+      current.visited = true
+      current.highlight(p5)
+  
+      let next = current.checkNeighbors(p5)
+      
+      if (next) {
+        next.visited = true
+  
+        stack.push(current)
+  
+        removeWalls(current, next)
+  
+        current = next
+  
+      } else if (stack.length > 0) {
+        current = stack.pop()
+      }
+      else if (stack.length === 0) {
+        setArray(arrayOfCells)
+        setIsCreated(true);
+        p5.noLoop()
+      }
   }
+
+  const setArrayLab = (array, setFunction ) => {
+    let auxArray = array.map(({ line, column, walls, isEnd }) => {
+      return new Cell(column, line, walls, isEnd)
+    });
+      setFunction(auxArray)
+      
+  }
+
+  useEffect(() => {
+    if(isCreated) {
+      setArrayLab(_array, setArrayDFS)
+      setArrayLab(_array, setArrayBFS)
+      setArrayLab(_array, setArrayHotspot)
+    }
+  }, [isCreated, _array])
 
   return (
     <div className="App">
-    <Sketch setup={setup} draw={draw} />
+      <div style={{margin: 10}}>
+    <Sketch setup={setup} draw={draw}/>
+    </div>
+    <div style={{display: 'flex', justifyContent: 'space-around'}}>
+    {isCreated && arrayDFS.length && arrayBFS.length && arrayHotspot.length && (
+      <>
+          <Labyrinth array={arrayDFS} endpoint={endpoint} type="DFS"/>
+          <Labyrinth array={arrayBFS} endpoint={endpoint} type="BFS"/>
+          <Labyrinth array={arrayHotspot} endpoint={endpoint} type="Hotspot"/>
+      </>
+    )}
+    </div>
     </div>
   )
 }
