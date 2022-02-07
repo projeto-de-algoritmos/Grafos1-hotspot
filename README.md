@@ -1,44 +1,40 @@
-**!! Atenção: Renomeie o seu repositório para (Tema)_(NomeDoProjeto). !!** 
 
-Temas:
- - Grafos1
- - Grafos2
- - PD
- - D&C
- - Greed
- - Final 
- 
- **!! *Não coloque os nomes dos alunos no título do repositório*. Exemplo de título correto: Grafos2_Labirinto-do-Minotauro !!**
- 
- (Apague essa seção)
 
-# NomedoProjeto
+# Hotspot
 
-**Número da Lista**: X<br>
-**Conteúdo da Disciplina**: XXXXXXXXXX<br>
+**Número da Lista**: 1<br>
+**Conteúdo da Disciplina**: Grafos<br>
 
 ## Alunos
 |Matrícula | Aluno |
 | -- | -- |
+| 16/0127891  |  João Vitor de Moura Rosa Silva |
 | 16/0016169  |  Nícalo Ribeiro |
-| xx/xxxxxx  |  xxxx xxxx xxxxx |
 
 ## Sobre 
-Descreva os objetivos do seu projeto e como ele funciona. 
+O objetivo do projeto é demonstrar um algoritmo chamado hotspot, que é uma otimização de um DFS que coloca peso nas opções de caminho com base na distancia ate o ponto final.
 
 ## Screenshots
-Adicione 3 ou mais screenshots do projeto em funcionamento.
+[Gerando labirinto](grafos1-hotspot/Capturar.PNG)
+[Rodando](grafos1-hotspot/rodando.PNG)
+[Final](grafos1-hotspot/final.PNG)
 
 ## Instalação 
-**Linguagem**: JavaScript<br>
-**Framework**: (caso exista)<br>
-Descreva os pré-requisitos para rodar o seu projeto e os comandos necessários.
+**Linguagem**: Javascript<br>
+**Framework**: ReactJs<br>
+requisitos: npm ou yarn
 
 ## Uso 
-Explique como usar seu projeto caso haja algum passo a passo após o comando de execução.
+```
+npm install
+```
+
+```
+npm start
+```
 
 ## Outros 
-Quaisquer outras informações sobre seu projeto podem ser descritas abaixo.
+O projeto inicia criando um labirinto usando DFS, e após a criação, 3 novos labirintos são renderizados abaixo rodando simultaneamente um DFS, BFS e o hotspot.
 
 
 
