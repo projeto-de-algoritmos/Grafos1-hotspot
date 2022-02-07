@@ -15,9 +15,18 @@
 O objetivo do projeto é demonstrar um algoritmo chamado hotspot, que é uma otimização de um DFS que coloca peso nas opções de caminho com base na distancia ate o ponto final.
 
 ## Screenshots
-[Gerando labirinto](grafos1-hotspot/Capturar.PNG)
-[Rodando](grafos1-hotspot/rodando.PNG)
-[Final](grafos1-hotspot/final.PNG)
+
+Gerando labirinto
+
+![Gerando labirinto](grafos1-hotspot/Capturar.PNG)
+
+Rodando
+
+![Rodando](grafos1-hotspot/rodando.PNG)
+
+Final
+
+![Final](grafos1-hotspot/final.PNG)
 
 ## Instalação 
 **Linguagem**: Javascript<br>
